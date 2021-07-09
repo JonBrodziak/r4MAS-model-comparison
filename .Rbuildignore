@@ -1,0 +1,4 @@
+^data-raw$
+mas.log
+snapper_grouper/C*
+.Rhistory
