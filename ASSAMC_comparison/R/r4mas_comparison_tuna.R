@@ -44,10 +44,10 @@ M <- 0.2 # Age-invariant natural mortality
 
 # TUNA life history parameters - medians from scombrid database 
 
-Linf <- 85.6 # Asymptotic average length
+Linf <- 856 # Asymptotic average length
 K <- 0.31 # Growth coefficient
 a0 <- -0.86 # Theoretical age at size 0
-a.lw <- 0.0000423 # Length-weight coefficient
+a.lw <- 0.0269 # Length-weight coefficient
 b.lw <- 3.02 # Length-weight exponent
 A50.mat <- 2 # Age at 50% maturity
 slope.mat <- 4.08 # Slope of maturity 
