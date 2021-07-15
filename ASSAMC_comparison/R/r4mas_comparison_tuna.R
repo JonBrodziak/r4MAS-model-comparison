@@ -41,13 +41,17 @@ mean_h <- NULL
 SRmodel <- 1 # 1=Beverton-Holt; 2=Ricker
 M <- 0.2 # Age-invariant natural mortality
 
-Linf <- 800 # Asymptotic average length
-K <- 0.18 # Growth coefficient
-a0 <- -1.36 # Theoretical age at size 0
-a.lw <- 0.000000025 # Length-weight coefficient
-b.lw <- 3.0 # Length-weight exponent
-A50.mat <- 2.25 # Age at 50% maturity
-slope.mat <- 3 # Slope of maturity ogive
+
+# TUNA life history parameters - medians from scombrid database 
+
+Linf <- 856 # Asymptotic average length
+K <- 0.31 # Growth coefficient
+a0 <- -0.86 # Theoretical age at size 0
+a.lw <- 0.0269 # Length-weight coefficient
+b.lw <- 3.02 # Length-weight exponent
+A50.mat <- 2 # Age at 50% maturity
+slope.mat <- 4.08 # Slope of maturity 
+
 pattern.mat <- 1 # Simple logistic maturity
 female.proportion <- 0.5 # Sex ratio
 
