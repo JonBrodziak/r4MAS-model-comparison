@@ -36,13 +36,12 @@ scombrid.extract <- function(data,type) {
                                      A50.mat = median(Tm50, na.rm=T),     # Age at 50% maturity 
                                      slope.mat = median(Fecundity_slope, na.rm=T), # mat slope
                                      a0 = median(to, na.rm=T),            # Theoretical age at size 0
-                                     Mest = mean(Mest, na.rm=T)))}        # Mortality
+                                     Mest = median(Mest, na.rm=T)))}      # Mortality
 }
 
 # example: calculate mean or median 
 scombrid.extract(data = scombrid, type = 'mean')
 scombrid.extract(data = scombrid, type = 'median')
-
 
 
 
