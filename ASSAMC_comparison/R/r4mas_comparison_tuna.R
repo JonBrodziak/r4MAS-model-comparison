@@ -39,8 +39,8 @@ median_h <- 0.75 # Steepness of the Beverton-Holt spawner-recruit relationship.
 mean_R0 <- NULL
 mean_h <- NULL
 SRmodel <- 1 # 1=Beverton-Holt; 2=Ricker
-M <- 0.2 # Age-invariant natural mortality
 
+M <- 0.7507703 # Tuna specific mortality estimated from the scombrid database using Tmax method 
 
 # TUNA life history parameters - medians from scombrid database 
 
