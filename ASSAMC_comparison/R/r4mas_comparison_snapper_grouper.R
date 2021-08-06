@@ -3,8 +3,7 @@
 # remotes::install_github("Bai-Li-NOAA/Age_Structured_Stock_Assessment_Model_Comparison")
 # remotes::install_github("cmlegault/ASAPplots")
 # remotes::install_github("r4ss/r4ss")
-# remotes::install_github(repo = "nmfs-fish-tools/r4MAS",
-#                         ref = "719f99f0cd36784eb4709af80b1991e60acdd17f")
+# remotes::install_github(repo = "nmfs-fish-tools/r4MAS")
 # install.packages("PBSadmb")
 
 library(ASSAMC)
@@ -17,15 +16,15 @@ library(jsonlite)
 library(parallel)
 library(doParallel)
 
-
+project_dir <- "C:/Users/bai.li/Documents/Github/r4MAS-model-comparison"
 # Set up OM ---------------------------------------------------------------
 
 # Need to have the em_input folder in the working directory run other estimation models
-maindir <- "C:/Users/bai.li/Documents/Github/r4MAS-model-comparison/ASSAMC_comparison/snapper_grouper"
+maindir <- file.path(project_dir, "ASSAMC_comparison/snapper_grouper")
 
-om_sim_num <- 160 # total number of iterations per case
-keep_sim_num <- 100 # number of kept iterations per case
-figure_number <- 10 # number of individual iteration to plot
+om_sim_num <- 5 # total number of iterations per case
+keep_sim_num <- 3 # number of kept iterations per case
+figure_number <- 1 # number of individual iteration to plot
 
 seed_num <- 9924
 
@@ -125,7 +124,6 @@ run_om(input_list = null_case_input, show_iter_num = T)
 ## Run EMs
 run_em(em_names = c("MAS"), input_list = null_case_input)
 # run_em(em_names = c("ASAP"), input_list = null_case_input) 
-
 
 ## Plot comparison outputs
 generate_plot(
@@ -291,13 +289,13 @@ updated_input <- save_initial_input(base_case=FALSE,
                                     sel_survey=sel_survey)
 
 run_om(input_list = updated_input, show_iter_num = F)
-# run_em(em_names = c("MAS"), input_list = updated_input)
-# generate_plot(
-#   em_names = c("MAS"),
-#   plot_ncol = 1, plot_nrow = 1,
-#   plot_color = c("deepskyblue3"),
-#   input_list = updated_input
-# )
+run_em(em_names = c("MAS"), input_list = updated_input)
+generate_plot(
+  em_names = c("MAS"),
+  plot_ncol = 1, plot_nrow = 1,
+  plot_color = c("deepskyblue3"),
+  input_list = updated_input
+)
 
 
 # Case 9 ------------------------------------------------------------------
@@ -334,13 +332,13 @@ updated_input <- save_initial_input(base_case=FALSE,
                                     n.survey=n.survey,
                                     sel_survey=sel_survey)
 run_om(input_list = updated_input, show_iter_num = F)
-# run_em(em_names = c("MAS"), input_list = updated_input)
-# generate_plot(
-#   em_names = c("MAS"),
-#   plot_ncol = 1, plot_nrow = 1,
-#   plot_color = c("deepskyblue3"),
-#   input_list = updated_input
-# )
+run_em(em_names = c("MAS"), input_list = updated_input)
+generate_plot(
+  em_names = c("MAS"),
+  plot_ncol = 1, plot_nrow = 1,
+  plot_color = c("deepskyblue3"),
+  input_list = updated_input
+)
 
 
 # Case 10 -----------------------------------------------------------------
@@ -350,10 +348,10 @@ updated_input <- save_initial_input(base_case=FALSE,
                                     case_name="C10",
                                     initial_equilibrium_F=FALSE)
 run_om(input_list = updated_input, show_iter_num = F)
-run_em(em_names = c("MAS"), input_list = updated_input)
-generate_plot(
-  em_names = c("MAS"),
-  plot_ncol = 1, plot_nrow = 1,
-  plot_color = c("deepskyblue3"),
-  input_list = updated_input
-)
+# run_em(em_names = c("MAS"), input_list = updated_input)
+# generate_plot(
+#   em_names = c("MAS"),
+#   plot_ncol = 1, plot_nrow = 1,
+#   plot_color = c("deepskyblue3"),
+#   input_list = updated_input
+# )

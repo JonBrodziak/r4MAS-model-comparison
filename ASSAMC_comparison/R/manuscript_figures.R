@@ -3,6 +3,7 @@ library(scales)
 # Set up working directory ------------------------------------------------
 
 project_dir <- "C:/Users/bai.li/Documents/Github/r4MAS-model-comparison/ASSAMC_comparison/snapper_grouper/"
+# project_dir <- "C:/Users/bai.li/Documents/Github/r4MAS-model-comparison/ASSAMC_comparison/tuna/"
 figure_folder_name <- "manuscript_figures"
 figure_path <- file.path(project_dir, figure_folder_name)
 dir.create(figure_path)
@@ -47,7 +48,7 @@ axis(2, at = c(om_output$msy$msy, msy_ratio), labels = c(expression(italic(MSY))
 dev.off()
 
 # Plot relative error in SSB, R, F, SSB/SSBMSY, and F/FMSY vioplot -------------------------------------------------------
-case_id <- paste("C", 1:7, sep = "")
+case_id <- paste("C", 1:9, sep = "")
 maindir_list <- paste(project_dir, case_id, sep = "")
 
 em_num <- 1
