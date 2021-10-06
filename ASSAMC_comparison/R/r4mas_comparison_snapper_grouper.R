@@ -2,8 +2,7 @@
 
 # remotes::install_github("Bai-Li-NOAA/Age_Structured_Stock_Assessment_Model_Comparison")
 # remotes::install_github("cmlegault/ASAPplots")
-# remotes::install_github("r4ss/r4ss")
-# remotes::install_github(repo = "nmfs-fish-tools/r4MAS")
+# remotes::install_github("nmfs-fish-tools/r4MAS", ref="d792b3866db14833eba81fe93eb90b5d0a9fddf5")
 # install.packages("PBSadmb")
 
 library(ASSAMC)
@@ -17,14 +16,17 @@ library(parallel)
 library(doParallel)
 
 project_dir <- "C:/Users/bai.li/Documents/Github/r4MAS-model-comparison"
+
+source(file.path(project_dir, "ASSAMC_comparison", "R", "run_mas_misreported_catch.R"))
 # Set up OM ---------------------------------------------------------------
 
 # Need to have the em_input folder in the working directory run other estimation models
 maindir <- file.path(project_dir, "ASSAMC_comparison/snapper_grouper")
 
-om_sim_num <- 5 # total number of iterations per case
-keep_sim_num <- 3 # number of kept iterations per case
-figure_number <- 1 # number of individual iteration to plot
+
+om_sim_num <- 120 # total number of iterations per case
+keep_sim_num <- 100 # number of kept iterations per case
+figure_number <- 10 # number of individual iteration to plot
 
 seed_num <- 9924
 
@@ -113,7 +115,6 @@ bias_cor_method <- "none" # Options: "none", "median_unbiased", and "mean_unbias
 em_bias_cor <- FALSE
 
 
-
 # Case 1 ------------------------------------------------------------------
 
 null_case_input <- save_initial_input(base_case = TRUE, case_name = "C1")
@@ -139,6 +140,25 @@ generate_plot(
 #   plot_color = c("deepskyblue3", "coral3"),
 #   input_list = null_case_input
 # )
+
+# Case 1_bc ------------------------------------------------------------------
+
+updated_input <- save_initial_input(
+  base_case = FALSE,
+  input_list = null_case_input,
+  case_name = "C1_bc",
+  om_bias_cor = TRUE,
+  bias_cor_method = "median_unbiased", 
+  em_bias_cor = TRUE
+)
+run_om(input_list = updated_input, show_iter_num = F)
+run_em(em_names = c("MAS"), input_list = updated_input)
+generate_plot(
+  em_names = c("MAS"),
+  plot_ncol = 1, plot_nrow = 1,
+  plot_color = c("deepskyblue3"),
+  input_list = updated_input
+)
 
 # Case 2 ------------------------------------------------------------------
 
@@ -348,10 +368,62 @@ updated_input <- save_initial_input(base_case=FALSE,
                                     case_name="C10",
                                     initial_equilibrium_F=FALSE)
 run_om(input_list = updated_input, show_iter_num = F)
-# run_em(em_names = c("MAS"), input_list = updated_input)
-# generate_plot(
-#   em_names = c("MAS"),
-#   plot_ncol = 1, plot_nrow = 1,
-#   plot_color = c("deepskyblue3"),
-#   input_list = updated_input
-# )
+run_em(em_names = c("MAS"), input_list = updated_input)
+generate_plot(
+  em_names = c("MAS"),
+  plot_ncol = 1, plot_nrow = 1,
+  plot_color = c("deepskyblue3"),
+  input_list = updated_input
+)
+
+
+# Case 11 (Increase survey observation error) -----------------------------------------------------------------
+
+cv.survey <- list()
+cv.survey$survey1 <- 0.5
+
+# Input CV of surveys for EMs
+input.cv.survey <- list()
+input.cv.survey$survey1 <- 0.5
+
+updated_input <- save_initial_input(
+  base_case = FALSE,
+  input_list = null_case_input,
+  case_name = "C11",
+  cv.survey = cv.survey,
+  input.cv.survey = input.cv.survey
+)
+run_om(input_list = updated_input, show_iter_num = F)
+run_em(em_names = c("MAS"), input_list = updated_input)
+generate_plot(
+  em_names = c("MAS"),
+  plot_ncol = 1, plot_nrow = 1,
+  plot_color = c("deepskyblue3"),
+  input_list = updated_input
+)
+
+
+# Case 12 (Misreported catch) ---------------------------------------------
+
+updated_input <- save_initial_input(base_case=FALSE,
+                                    input_list=null_case_input,
+                                    case_name="C12")
+## Run OM
+run_om(input_list = updated_input, show_iter_num = F)
+
+## Run MAS
+run_mas_misreported_catch(maindir = updated_input$maindir,
+                          subdir = "MAS",
+                          om_sim_num = updated_input$om_sim_num,
+                          casedir = updated_input$case_name,
+                          em_bias_cor = updated_input$em_bias_cor,
+                          input_list = updated_input)
+
+generate_plot(
+  em_names = c("MAS"),
+  plot_ncol = 1, plot_nrow = 1,
+  plot_color = c("deepskyblue3"),
+  input_list = updated_input
+)
+
+
