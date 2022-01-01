@@ -39,7 +39,7 @@ library(scales)
 
 # Description of cases
 
-- Case 1: Null case. 
+- Case 1: Null case
   - $\sigma_{R} = 0.4$
   - Fishing mortality ($F$) deviations are same per iteration
   - $F$ pattern: increase
@@ -47,7 +47,7 @@ library(scales)
   - Number of survey: 1
   - Initial condition: $\phi_{F} \neq \phi_{0}$
 
-- Case 2: Increase recruitment variability. 
+- Case 2: Increase recruitment variability
   - $\sigma_{R} = 0.6$
 
 - Case 3: Stochastic $F$ 
@@ -60,16 +60,25 @@ library(scales)
   - $F = F_{low}$
 
 - Case 6: Constant $F$ pattern
+  - $F = F_{MSY}$
+  
+- Case 7: Constant $F$ pattern
   - $F = F_{high}$
 
-- Case 7: Selectivity pattern
+- Case 8: Selectivity pattern
   - Double logistic selectivity
 
-- Case 8: Increase number of surveys
+- Case 9: Increase number of surveys
   - Number of survey: 2
 
-- Case 9: Initial condition
+- Case 10: Initial condition
   - $\phi_{F} = \phi_{0}$
+  
+- Case 11: Increase survey coefficient of variation
+  - $CV_{I} = 0.5$
+  
+- Case 12: Misreported catch
+  - Multiply "true" age composition with randomly generated values that follow a normal distribution with a mean of 50 and standard deviation of 10
 
 Table 1. Settings of recruitment variability, fishing mortality deviations, fishing mortality patterns, selectivity patterns, and initial condition.
 
@@ -133,7 +142,6 @@ Figure 1. The curve of the relationship of yield and fishing mortality rate ($F$
 ##  Overall relative error (RE) in $SSB$, $R$, $F$, $SSB/SSB_{MSY}$, and $F/F_{MSY}$
 ```{r echo=FALSE, warning=FALSE, dpi=800}
 # Plot SSB, R, F, SSB/SSBMSY, and F/FMSY vioplot -------------------------------------------------------
-case_id <- paste("C", 1:7, sep="")
 maindir_list <- paste(project_dir, case_id, sep="")
 
 em_num <- 1
@@ -267,7 +275,7 @@ Figure 2. Violin plot of relative error (RE) across years and iterations for spa
 # Plot SSB, R, F, SSB/SSBMSY and F/FMSY over time ------------------
 
 ## Aggregate output data
-case_id <- paste("C", 1:7, sep="")
+case_id <- paste("C", 1:12, sep="")
 maindir_list <- paste(project_dir, case_id, sep="")
 
 em_num <- 1
@@ -487,7 +495,6 @@ legend("top",
 ```{r echo=FALSE, warning=FALSE, results = 'hide', dpi=800}
 
 ## Aggregate output data
-case_id <- paste("C", 1:7, sep = "")
 maindir_list <- paste(project_dir, case_id, sep = "")
 
 em_num <- 1
@@ -520,7 +527,7 @@ op <- par(no.readonly = TRUE)
 par(op)
 par(oma = c(1, 1, 1, 1), mar = c(6, 0, 0, 0.5), mfrow = c(1, 3), pch = 16)
 color <- rep("black", times = em_num)
-xlim <- c(-10, 10)
+xlim <- c(-0.6, 0.6)
 
 plot(msy_stat[2, ], rev(1:ncol(msy_stat)),
   pch = rep(((1:em_num) + 1), times = length(maindir_list)),
@@ -533,7 +540,7 @@ segments(msy_stat[1, ], rev(1:ncol(msy_stat)), msy_stat[3, ], rev(1:ncol(msy_sta
 abline(v = 0, col = "gray", lty = 2)
 abline(h = seq(em_num + 0.5, ncol(msy_stat), by = em_num), col = "gray30", lty = 2)
 box()
-axis(1, at = seq(-10, 10, by = 5), labels = c(expression(paste("\u2013", "10")), expression(paste("\u2013", "5")), expression("0.0"), expression("5"), expression("10")))
+axis(1, at = seq(-0.6, 0.6, by = 0.3), labels = c(expression(paste("\u2013", "0.6")), expression(paste("\u2013", "0.3")), expression("0.0"), expression("0.6"), expression("0.3")))
 text(
   x = rep(min(xlim) * 0.8, times = length(maindir_list)),
   y = seq(em_num, ncol(msy_stat), by = em_num),
@@ -551,7 +558,7 @@ segments(fmsy_stat[1, ], rev(1:ncol(fmsy_stat)), fmsy_stat[3, ], rev(1:ncol(fmsy
 abline(v = 0, col = "gray", lty = 2)
 abline(h = seq(em_num + 0.5, ncol(fmsy_stat), by = em_num), col = "gray30", lty = 2)
 box()
-axis(1, at = seq(-10, 10, by = 5), labels = c(expression(paste("\u2013", "10")), expression(paste("\u2013", "5")), expression("0.0"), expression("5"), expression("10")))
+axis(1, at = seq(-0.6, 0.6, by = 0.3), labels = c(expression(paste("\u2013", "0.6")), expression(paste("\u2013", "0.3")), expression("0.0"), expression("0.6"), expression("0.3")))
 text(
   x = rep(min(xlim) * 0.8, times = length(maindir_list)),
   y = seq(em_num, ncol(fmsy_stat), by = em_num) ,
@@ -581,7 +588,7 @@ segments(ssbmsy_stat[1, ], rev(1:ncol(ssbmsy_stat)), ssbmsy_stat[3, ], rev(1:nco
 abline(v = 0, col = "gray", lty = 2)
 abline(h = seq(em_num + 0.5, ncol(ssbmsy_stat), by = em_num), col = "gray30", lty = 2)
 box()
-axis(1, at = seq(-10, 10, by = 5), labels = c(expression(paste("\u2013", "10")), expression(paste("\u2013", "5")), expression("0.0"), expression("5"), expression("10")))
+axis(1, at = seq(-0.6, 0.6, by = 0.3), labels = c(expression(paste("\u2013", "0.6")), expression(paste("\u2013", "0.3")), expression("0.0"), expression("0.3"), expression("0.6")))
 text(
   x = rep(min(xlim) * 0.8, times = length(maindir_list)),
   y = seq(em_num, ncol(ssbmsy_stat), by = em_num),
