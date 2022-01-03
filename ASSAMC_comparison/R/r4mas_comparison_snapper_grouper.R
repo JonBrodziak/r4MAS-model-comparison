@@ -2,7 +2,7 @@
 
 # remotes::install_github("Bai-Li-NOAA/Age_Structured_Stock_Assessment_Model_Comparison")
 # remotes::install_github("cmlegault/ASAPplots")
-# remotes::install_github("nmfs-fish-tools/r4MAS", ref="d792b3866db14833eba81fe93eb90b5d0a9fddf5")
+# remotes::install_github("nmfs-fish-tools/r4MAS", ref="611e236d0147a231121c3e1f4429ca7b4d34d997")
 # install.packages("PBSadmb")
 
 library(ASSAMC)
@@ -27,6 +27,10 @@ maindir <- file.path(project_dir, "ASSAMC_comparison/snapper_grouper")
 om_sim_num <- 120 # total number of iterations per case
 keep_sim_num <- 100 # number of kept iterations per case
 figure_number <- 10 # number of individual iteration to plot
+
+# om_sim_num <- 30 # total number of iterations per case
+# keep_sim_num <- 30 # number of kept iterations per case
+# figure_number <- 1 # number of individual iteration to plot
 
 seed_num <- 9924
 
