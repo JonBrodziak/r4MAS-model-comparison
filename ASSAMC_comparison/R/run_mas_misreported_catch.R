@@ -12,6 +12,8 @@ run_mas_misreported_catch <- function(maindir = maindir,
   unlink(list.files(file.path(casedir, "output", "MAS"), full.names = TRUE), recursive = TRUE)
   sapply(1:om_sim_num, function(x) dir.create(file.path(casedir, "output", subdir, paste("s", x, sep = ""))))
 
+  mismatch_ratio <<- matrix(NA, nrow = om_sim_num, ncol = om_input$nyr)
+
   for (om_sim in 1:om_sim_num) {
     load(file = file.path(casedir, "output", "OM", paste("OM", om_sim, ".RData", sep = "")))
 
@@ -87,10 +89,13 @@ run_mas_misreported_catch <- function(maindir = maindir,
     # Catch index values and observation errors
     L.age.miscatch <- om_output$L.age
     L.mt.miscatch <- om_output$L.mt
+    
+    mismatch_ratio[om_sim, ] <<- runif(n = om_input$nyr, min = 0.8, max = 1.0)
 
     for (i in 1:fleet_num) {
       for (j in 1:om_input$nyr) {
-        L.age.miscatch[[i]][j, ] <- om_output$L.age[[i]][j, ] * rnorm(om_input$nages, mean = 50, sd = 10)
+        # L.age.miscatch[[i]][j, ] <- om_output$L.age[[i]][j, ] * rnorm(om_input$nages, mean = 50, sd = 10)
+        L.age.miscatch[[i]][j, ] <- om_output$L.age[[i]][j, ] * mismatch_ratio[om_sim, j]
         L.mt.miscatch[[i]][j] <- sum(L.age.miscatch[[i]][j, ] * om_input$W.mt)
       }
     }
@@ -112,7 +117,7 @@ run_mas_misreported_catch <- function(maindir = maindir,
 
     em_input$cv.L <- input_list$input.cv.L
     em_input$cv.survey <- input_list$input.cv.survey
-    
+
     catch_index <- new(r4mas$IndexData)
     catch_index$values <- em_input$L.obs$fleet1
     catch_index$error <- rep(em_input$cv.L$fleet1, times = om_input$nyr)
