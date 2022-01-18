@@ -3,7 +3,8 @@ run_mas_misreported_catch <- function(maindir = maindir,
                                       om_sim_num = NULL,
                                       casedir = NULL,
                                       em_bias_cor = FALSE,
-                                      input_list = NULL) {
+                                      input_list = NULL,
+                                      misreported_catch_ratio =0.8) {
   casedir <- file.path(maindir, casedir)
 
   if (!file.exists(file.path(casedir, "output", subdir))) dir.create(file.path(casedir, "output", subdir))
@@ -90,7 +91,7 @@ run_mas_misreported_catch <- function(maindir = maindir,
     L.age.miscatch <- om_output$L.age
     L.mt.miscatch <- om_output$L.mt
     
-    mismatch_ratio[om_sim, ] <<- runif(n = om_input$nyr, min = 0.8, max = 1.0)
+    mismatch_ratio[om_sim, ] <<- runif(n = om_input$nyr, min = misreported_catch_ratio, max = 1.0)
 
     for (i in 1:fleet_num) {
       for (j in 1:om_input$nyr) {
@@ -292,6 +293,7 @@ run_mas_misreported_catch <- function(maindir = maindir,
     }
 
     mas_model <- new(r4mas$MASModel)
+    mas_model$compute_variance_for_derived_quantities<-FALSE
     mas_model$nyears <- nyears
     mas_model$nseasons <- nseasons
     mas_model$nages <- nages
