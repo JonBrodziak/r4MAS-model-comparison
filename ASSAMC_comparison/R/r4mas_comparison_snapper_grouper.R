@@ -407,7 +407,7 @@ generate_plot(
 )
 
 
-# Case 12 (Misreported catch) ---------------------------------------------
+# Case 12 (Misreported catch: ratio=0.8) ---------------------------------------------
 
 updated_input <- save_initial_input(base_case=FALSE,
                                     input_list=null_case_input,
@@ -421,7 +421,8 @@ run_mas_misreported_catch(maindir = updated_input$maindir,
                           om_sim_num = updated_input$om_sim_num,
                           casedir = updated_input$case_name,
                           em_bias_cor = updated_input$em_bias_cor,
-                          input_list = updated_input)
+                          input_list = updated_input,
+                          misreported_catch_ratio = 0.8)
 
 generate_plot(
   em_names = c("MAS"),
@@ -431,3 +432,26 @@ generate_plot(
 )
 
 
+# Case 13 (Misreported catch: ratio=0.6) ---------------------------------------------
+
+updated_input <- save_initial_input(base_case=FALSE,
+                                    input_list=null_case_input,
+                                    case_name="C13")
+## Run OM
+run_om(input_list = updated_input, show_iter_num = F)
+
+## Run MAS
+run_mas_misreported_catch(maindir = updated_input$maindir,
+                          subdir = "MAS",
+                          om_sim_num = updated_input$om_sim_num,
+                          casedir = updated_input$case_name,
+                          em_bias_cor = updated_input$em_bias_cor,
+                          input_list = updated_input,
+                          misreported_catch_ratio = 0.5)
+
+generate_plot(
+  em_names = c("MAS"),
+  plot_ncol = 1, plot_nrow = 1,
+  plot_color = c("deepskyblue3"),
+  input_list = updated_input
+)
