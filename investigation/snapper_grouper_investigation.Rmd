@@ -6,7 +6,7 @@ output: md_document
 
 ```{r, warning = FALSE, message = TRUE, fig.height = 6, echo=TRUE}
 # Check snapper grouper cases 1 (null case), 8 (double logistic selectivity), and 12 (misreported catch)
-
+library(ASSAMC)
 project_dir <- "C:/Users/bai.li/Documents/Github/r4MAS-model-comparison"
 
 scenarios <- expand.grid(estimate_selectivity_options = c(TRUE, FALSE), 
@@ -98,6 +98,40 @@ for (scenario_id in 1:nrow(scenarios)){
   population$SetInitialDeviations(initial_deviations$id, area1$id, "undifferentiated")
   population$SetGrowth(growth$id)
   population$sex_ratio <- 0.5
+  
+  if (case_id == "c12"){
+    # Catch index values and observation errors
+    L.age.miscatch <- om_output$L.age
+    L.mt.miscatch <- om_output$L.mt
+    
+    mismatch_ratio <- runif(n = om_input$nyr, min = 0.8, max = 1.0)
+
+    for (i in 1:om_input$fleet_num) {
+      for (j in 1:om_input$nyr) {
+        L.age.miscatch[[i]][j, ] <- om_output$L.age[[i]][j, ] * mismatch_ratio[j]
+        L.mt.miscatch[[i]][j] <- sum(L.age.miscatch[[i]][j, ] * om_input$W.mt)
+      }
+    }
+
+    em_input <- ASSAMC::ObsModel(
+      nyr = om_input$nyr,
+      nages = om_input$nages,
+      fleet_num = om_input$fleet_num,
+      L = L.mt.miscatch,
+      survey_num = om_input$survey_num,
+      survey = om_output$survey_index,
+      L.age = L.age.miscatch,
+      survey.age = om_output$survey_age_comp,
+      cv.L = om_input$cv.L,
+      cv.survey = om_input$cv.survey,
+      n.L = om_input$n.L,
+      n.survey = om_input$n.survey
+    )
+
+    em_input$cv.L <- om_input$cv.L
+    em_input$cv.survey <- om_input$cv.survey
+
+  }
   
   # Catch index values and observation errors
   catch_index <- new(r4mas$IndexData)
@@ -277,6 +311,7 @@ for (scenario_id in 1:nrow(scenarios)){
   }
   
   mas_model <- new(r4mas$MASModel)
+  mas_model$compute_variance_for_derived_quantities<-FALSE
   mas_model$nyears <- nyears
   mas_model$nseasons <- nseasons
   mas_model$nages <- nages
@@ -291,8 +326,6 @@ for (scenario_id in 1:nrow(scenarios)){
     mas_model$AddSurvey(survey[[i]]$id)
   }
   
-  # mas_model$tolerance <- 0.0001
-  
   # Run MAS
   mas_model$Run()
   output_file <- file.path(project_dir, "investigation", paste0(case_id, ".json"))
@@ -301,7 +334,7 @@ for (scenario_id in 1:nrow(scenarios)){
   
   
   # plot MAS results --------------------------------------------------------
-  print(paste0("Case ID: ", case_id, "; Estimate selectivity parameters: ", estimate_selectivity_params))
+  cat(paste0("\n Case ID: ", case_id, "\nEstimate selectivity parameters: ", estimate_selectivity_params, "\n"))
   
   # OM output
   om <- list()

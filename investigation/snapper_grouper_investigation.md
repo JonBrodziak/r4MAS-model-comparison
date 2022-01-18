@@ -1,5 +1,5 @@
     # Check snapper grouper cases 1 (null case), 8 (double logistic selectivity), and 12 (misreported catch)
-
+    library(ASSAMC)
     project_dir <- "C:/Users/bai.li/Documents/Github/r4MAS-model-comparison"
 
     scenarios <- expand.grid(estimate_selectivity_options = c(TRUE, FALSE), 
@@ -91,6 +91,40 @@
       population$SetInitialDeviations(initial_deviations$id, area1$id, "undifferentiated")
       population$SetGrowth(growth$id)
       population$sex_ratio <- 0.5
+      
+      if (case_id == "c12"){
+        # Catch index values and observation errors
+        L.age.miscatch <- om_output$L.age
+        L.mt.miscatch <- om_output$L.mt
+        
+        mismatch_ratio <- runif(n = om_input$nyr, min = 0.8, max = 1.0)
+
+        for (i in 1:om_input$fleet_num) {
+          for (j in 1:om_input$nyr) {
+            L.age.miscatch[[i]][j, ] <- om_output$L.age[[i]][j, ] * mismatch_ratio[j]
+            L.mt.miscatch[[i]][j] <- sum(L.age.miscatch[[i]][j, ] * om_input$W.mt)
+          }
+        }
+
+        em_input <- ASSAMC::ObsModel(
+          nyr = om_input$nyr,
+          nages = om_input$nages,
+          fleet_num = om_input$fleet_num,
+          L = L.mt.miscatch,
+          survey_num = om_input$survey_num,
+          survey = om_output$survey_index,
+          L.age = L.age.miscatch,
+          survey.age = om_output$survey_age_comp,
+          cv.L = om_input$cv.L,
+          cv.survey = om_input$cv.survey,
+          n.L = om_input$n.L,
+          n.survey = om_input$n.survey
+        )
+
+        em_input$cv.L <- om_input$cv.L
+        em_input$cv.survey <- om_input$cv.survey
+
+      }
       
       # Catch index values and observation errors
       catch_index <- new(r4mas$IndexData)
@@ -270,6 +304,7 @@
       }
       
       mas_model <- new(r4mas$MASModel)
+      mas_model$compute_variance_for_derived_quantities<-FALSE
       mas_model$nyears <- nyears
       mas_model$nseasons <- nseasons
       mas_model$nages <- nages
@@ -284,6 +319,7 @@
         mas_model$AddSurvey(survey[[i]]$id)
       }
       
+      
       # mas_model$tolerance <- 0.0001
       
       # Run MAS
@@ -294,7 +330,7 @@
       
       
       # plot MAS results --------------------------------------------------------
-      print(paste0("Case ID: ", case_id, "; Estimate selectivity parameters: ", estimate_selectivity_params))
+      cat(paste0("\n Case ID: ", case_id, "\nEstimate selectivity parameters: ", estimate_selectivity_params, "\n"))
       
       # OM output
       om <- list()
@@ -541,21 +577,25 @@
     }
 
     ## [1] "loading r4MAS"
-    ## [1] "Case ID: c1; Estimate selectivity parameters: TRUE"
+    ## 
+    ##  Case ID: c1
+    ## Estimate selectivity parameters: TRUE
 
 ![](snapper_grouper_investigation_files/figure-markdown_strict/unnamed-chunk-1-1.png)![](snapper_grouper_investigation_files/figure-markdown_strict/unnamed-chunk-1-2.png)![](snapper_grouper_investigation_files/figure-markdown_strict/unnamed-chunk-1-3.png)
 
     ##                                    OM          MAS
-    ## R0                       1.000000e+03 1.094089e+03
+    ## R0                       1.000000e+03 1.092444e+03
     ## q                        3.315143e-07 3.290000e-07
-    ## MSY                      1.044315e+03 1.141107e+03
+    ## MSY                      1.044315e+03 1.139378e+03
     ## FMSY                     1.920000e-01 1.920000e-01
-    ## SSBMSY                   3.312804e+03 3.633748e+03
-    ## Fleet selectivity A50    2.000000e+00 1.999184e+00
-    ## Fleet selectivity slope  1.000000e+00 9.524562e-01
-    ## Survey selectivity A50   1.500000e+00 1.432550e+00
-    ## Survey selectivity slope 2.000000e+00 2.146641e+00
-    ## [1] "Case ID: c1; Estimate selectivity parameters: FALSE"
+    ## SSBMSY                   3.312804e+03 3.628114e+03
+    ## Fleet selectivity A50    2.000000e+00 1.998956e+00
+    ## Fleet selectivity slope  1.000000e+00 9.525987e-01
+    ## Survey selectivity A50   1.500000e+00 1.432453e+00
+    ## Survey selectivity slope 2.000000e+00 2.146886e+00
+    ## 
+    ##  Case ID: c1
+    ## Estimate selectivity parameters: FALSE
 
 ![](snapper_grouper_investigation_files/figure-markdown_strict/unnamed-chunk-1-4.png)![](snapper_grouper_investigation_files/figure-markdown_strict/unnamed-chunk-1-5.png)![](snapper_grouper_investigation_files/figure-markdown_strict/unnamed-chunk-1-6.png)
 
@@ -569,7 +609,9 @@
     ## Fleet selectivity slope  1.000000e+00           NA
     ## Survey selectivity A50   1.500000e+00           NA
     ## Survey selectivity slope 2.000000e+00           NA
-    ## [1] "Case ID: c8; Estimate selectivity parameters: TRUE"
+    ## 
+    ##  Case ID: c8
+    ## Estimate selectivity parameters: TRUE
 
 ![](snapper_grouper_investigation_files/figure-markdown_strict/unnamed-chunk-1-7.png)![](snapper_grouper_investigation_files/figure-markdown_strict/unnamed-chunk-1-8.png)![](snapper_grouper_investigation_files/figure-markdown_strict/unnamed-chunk-1-9.png)
 
@@ -587,7 +629,9 @@
     ## Survey selectivity slope_ase  1.500000e+00 1.502745e+00
     ## Survey selectivity A50_desc   1.200000e+01 1.200000e+01
     ## Survey selectivity slope_desc 3.700000e-01 3.372210e-01
-    ## [1] "Case ID: c8; Estimate selectivity parameters: FALSE"
+    ## 
+    ##  Case ID: c8
+    ## Estimate selectivity parameters: FALSE
 
 ![](snapper_grouper_investigation_files/figure-markdown_strict/unnamed-chunk-1-10.png)![](snapper_grouper_investigation_files/figure-markdown_strict/unnamed-chunk-1-11.png)![](snapper_grouper_investigation_files/figure-markdown_strict/unnamed-chunk-1-12.png)
 
@@ -605,30 +649,34 @@
     ## Survey selectivity slope_ase  1.500000e+00           NA
     ## Survey selectivity A50_desc   1.200000e+01           NA
     ## Survey selectivity slope_desc 3.700000e-01           NA
-    ## [1] "Case ID: c12; Estimate selectivity parameters: TRUE"
+    ## 
+    ##  Case ID: c12
+    ## Estimate selectivity parameters: TRUE
 
 ![](snapper_grouper_investigation_files/figure-markdown_strict/unnamed-chunk-1-13.png)![](snapper_grouper_investigation_files/figure-markdown_strict/unnamed-chunk-1-14.png)![](snapper_grouper_investigation_files/figure-markdown_strict/unnamed-chunk-1-15.png)
 
     ##                                    OM          MAS
-    ## R0                       1.000000e+03 1.092444e+03
-    ## q                        3.315143e-07 3.290000e-07
-    ## MSY                      1.044315e+03 1.139378e+03
+    ## R0                       1.000000e+03 1.014280e+03
+    ## q                        3.315143e-07 3.570000e-07
+    ## MSY                      1.044315e+03 1.059384e+03
     ## FMSY                     1.920000e-01 1.920000e-01
-    ## SSBMSY                   3.312804e+03 3.628114e+03
-    ## Fleet selectivity A50    2.000000e+00 1.998956e+00
-    ## Fleet selectivity slope  1.000000e+00 9.525987e-01
-    ## Survey selectivity A50   1.500000e+00 1.432453e+00
-    ## Survey selectivity slope 2.000000e+00 2.146886e+00
-    ## [1] "Case ID: c12; Estimate selectivity parameters: FALSE"
+    ## SSBMSY                   3.312804e+03 3.363955e+03
+    ## Fleet selectivity A50    2.000000e+00 2.004548e+00
+    ## Fleet selectivity slope  1.000000e+00 9.932114e-01
+    ## Survey selectivity A50   1.500000e+00 1.481472e+00
+    ## Survey selectivity slope 2.000000e+00 2.020745e+00
+    ## 
+    ##  Case ID: c12
+    ## Estimate selectivity parameters: FALSE
 
 ![](snapper_grouper_investigation_files/figure-markdown_strict/unnamed-chunk-1-16.png)![](snapper_grouper_investigation_files/figure-markdown_strict/unnamed-chunk-1-17.png)![](snapper_grouper_investigation_files/figure-markdown_strict/unnamed-chunk-1-18.png)
 
     ##                                    OM          MAS
-    ## R0                       1.000000e+03 1.100053e+03
-    ## q                        3.315143e-07 3.370000e-07
-    ## MSY                      1.044315e+03 1.148802e+03
+    ## R0                       1.000000e+03 9.875963e+02
+    ## q                        3.315143e-07 3.660000e-07
+    ## MSY                      1.044315e+03 1.031362e+03
     ## FMSY                     1.920000e-01 1.920000e-01
-    ## SSBMSY                   3.312804e+03 3.644260e+03
+    ## SSBMSY                   3.312804e+03 3.271714e+03
     ## Fleet selectivity A50    2.000000e+00           NA
     ## Fleet selectivity slope  1.000000e+00           NA
     ## Survey selectivity A50   1.500000e+00           NA
