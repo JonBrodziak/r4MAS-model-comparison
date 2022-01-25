@@ -1,4 +1,7 @@
+remotes::install_github("nmfs-fish-tools/r4MAS", ref = "double_selectivity")
+
 library(ASSAMC)
+library(r4MAS)
 project_dir <- "C:/Users/bai.li/Documents/Github/r4MAS-model-comparison"
 scenarios <- expand.grid(estimate_selectivity_options = c(TRUE), 
                          cases = c("c8"))
@@ -160,7 +163,7 @@ for (scenario_id in 1:nrow(scenarios)){
     fleet_selectivity$alpha_asc$min <- 0.0
     fleet_selectivity$alpha_asc$max <- max(om_input$ages)
     
-    fleet_selectivity$beta_asc$value <- om_input$sel_fleet$fleet1$slope.sel1
+    fleet_selectivity$beta_asc$value <- 1/om_input$sel_fleet$fleet1$slope.sel1
     fleet_selectivity$beta_asc$estimated <- estimate_selectivity_params
     fleet_selectivity$beta_asc$phase <- 2
     fleet_selectivity$beta_asc$min <- 0.0001
@@ -172,7 +175,7 @@ for (scenario_id in 1:nrow(scenarios)){
     fleet_selectivity$alpha_desc$min <- 0.0
     fleet_selectivity$alpha_desc$max <- max(om_input$ages)
     
-    fleet_selectivity$beta_desc$value <- om_input$sel_fleet$fleet1$slope.sel2
+    fleet_selectivity$beta_desc$value <- 1/om_input$sel_fleet$fleet1$slope.sel2
     fleet_selectivity$beta_desc$estimated <- estimate_selectivity_params
     fleet_selectivity$beta_desc$phase <- 2
     fleet_selectivity$beta_desc$min <- 0.0001
@@ -261,7 +264,7 @@ for (scenario_id in 1:nrow(scenarios)){
       survey_selectivity[[i]]$alpha_asc$min <- 0.0
       survey_selectivity[[i]]$alpha_asc$max <- max(om_input$ages)
       
-      survey_selectivity[[i]]$beta_asc$value <- om_input$sel_survey[[i]]$slope.sel1
+      survey_selectivity[[i]]$beta_asc$value <- 1/om_input$sel_survey[[i]]$slope.sel1
       survey_selectivity[[i]]$beta_asc$estimated <- estimate_selectivity_params
       survey_selectivity[[i]]$beta_asc$phase <- 2
       survey_selectivity[[i]]$beta_asc$min <- 0.0001
@@ -273,7 +276,7 @@ for (scenario_id in 1:nrow(scenarios)){
       survey_selectivity[[i]]$alpha_desc$min <- 0.0
       survey_selectivity[[i]]$alpha_desc$max <- max(om_input$ages)
       
-      survey_selectivity[[i]]$beta_desc$value <- om_input$sel_survey[[i]]$slope.sel2
+      survey_selectivity[[i]]$beta_desc$value <- 1/om_input$sel_survey[[i]]$slope.sel2
       survey_selectivity[[i]]$beta_desc$estimated <- estimate_selectivity_params
       survey_selectivity[[i]]$beta_desc$phase <- 2
       survey_selectivity[[i]]$beta_desc$min <- 0.0001
@@ -542,13 +545,13 @@ for (scenario_id in 1:nrow(scenarios)){
       om$fmsy, mas$fmsy, 
       om$ssbmsy, mas$ssbmsy,
       om$selexparm_fleet$fleet1$A50.sel1, mas$selexparm_fleet$a50_asc,
-      om$selexparm_fleet$fleet1$slope.sel1, mas$selexparm_fleet$slope_asc,
+      om$selexparm_fleet$fleet1$slope.sel1, 1/mas$selexparm_fleet$slope_asc,
       om$selexparm_fleet$fleet1$A50.sel2, mas$selexparm_fleet$a50_desc,
-      om$selexparm_fleet$fleet1$slope.sel2, mas$selexparm_fleet$slope_desc,
+      om$selexparm_fleet$fleet1$slope.sel2, 1/mas$selexparm_fleet$slope_desc,
       om$selexparm_survey$survey1$A50.sel1, mas$selexparm_survey$a50_asc,
-      om$selexparm_survey$survey1$slope.sel1, mas$selexparm_survey$slope_asc,
+      om$selexparm_survey$survey1$slope.sel1, 1/mas$selexparm_survey$slope_asc,
       om$selexparm_survey$survey1$A50.sel2, mas$selexparm_survey$a50_desc,
-      om$selexparm_survey$survey1$slope.sel2, mas$selexparm_survey$slope_desc
+      om$selexparm_survey$survey1$slope.sel2, 1/mas$selexparm_survey$slope_desc
     ),
     ncol = 2, byrow = TRUE
     )
@@ -572,20 +575,20 @@ for (scenario_id in 1:nrow(scenarios)){
 }
 
 # case 12
-# msy=ASSAMC::msy_calcs(steep=om_input$h, 
-#               R0=mas$r0, 
-#               M=om_input$M.age, 
-#               wgt=om_input$W.mt, 
-#               prop.f=om_input$proportion.female, 
-#               selL= ASSAMC::logistic(1, x=om_input$ages, a1=1 / mas$selexparm_fleet$slope, b1= mas$selexparm_fleet$a50), 
-#               selD=rep(0,om_input$nages), 
-#               selZ=ASSAMC::logistic(1, x=om_input$ages, a1=1 / mas$selexparm_fleet$slope, b1= mas$selexparm_fleet$a50), 
-#               mat.f=om_input$mat.age, mat.m=NULL, 
-#               sigma=om_input$logR_sd, 
-#               maxF=4.0, 
-#               step=0.001, 
-#               om_bias_cor=om_input$om_bias_cor, 
-#               bias_cor_method=om_input$bias_cor_method, 
+# msy=ASSAMC::msy_calcs(steep=om_input$h,
+#               R0=mas$r0,
+#               M=om_input$M.age,
+#               wgt=om_input$W.mt,
+#               prop.f=om_input$proportion.female,
+#               selL= ASSAMC::logistic(1, x=om_input$ages, a1=1 / mas$selexparm_fleet$slope, b1= mas$selexparm_fleet$a50),
+#               selD=rep(0,om_input$nages),
+#               selZ=ASSAMC::logistic(1, x=om_input$ages, a1=1 / mas$selexparm_fleet$slope, b1= mas$selexparm_fleet$a50),
+#               mat.f=om_input$mat.age, mat.m=NULL,
+#               sigma=om_input$logR_sd,
+#               maxF=4.0,
+#               step=0.001,
+#               om_bias_cor=om_input$om_bias_cor,
+#               bias_cor_method=om_input$bias_cor_method,
 #               SRmodel=om_input$SRmodel)
 # msy$msy*1000; msy$Fmsy; msy$SSBmsy*1000
 # print(summary_table)
@@ -596,9 +599,9 @@ msy=ASSAMC::msy_calcs(steep=om_input$h,
                       M=om_input$M.age, 
                       wgt=om_input$W.mt, 
                       prop.f=om_input$proportion.female, 
-                      selL= ASSAMC::logistic(2, x=om_input$ages, a1=mas$selexparm_fleet$slope_asc, b1= mas$selexparm_fleet$a50_asc, a2=mas$selexparm_fleet$slope_desc, b2=mas$selexparm_fleet$a50_desc), 
+                      selL= ASSAMC::logistic(2, x=om_input$ages, a1=1/mas$selexparm_fleet$slope_asc, b1= mas$selexparm_fleet$a50_asc, a2=1/mas$selexparm_fleet$slope_desc, b2=mas$selexparm_fleet$a50_desc), 
                       selD=rep(0,om_input$nages), 
-                      selZ=ASSAMC::logistic(2, x=om_input$ages, a1=mas$selexparm_fleet$slope_asc, b1= mas$selexparm_fleet$a50_asc, a2=mas$selexparm_fleet$slope_desc, b2=mas$selexparm_fleet$a50_desc), 
+                      selZ=ASSAMC::logistic(2, x=om_input$ages, a1=1/mas$selexparm_fleet$slope_asc, b1= mas$selexparm_fleet$a50_asc, a2=1/mas$selexparm_fleet$slope_desc, b2=mas$selexparm_fleet$a50_desc), 
                       mat.f=om_input$mat.age, mat.m=NULL, 
                       sigma=om_input$logR_sd, 
                       maxF=4.0, 
