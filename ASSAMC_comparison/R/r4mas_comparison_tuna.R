@@ -1,11 +1,9 @@
 # Install and library packages --------------------------------------------
 
-# remotes::install_github("Bai-Li-NOAA/Age_Structured_Stock_Assessment_Model_Comparison")
-# remotes::install_github("cmlegault/ASAPplots")
-# remotes::install_github("r4ss/r4ss")
-# remotes::install_github(repo = "nmfs-fish-tools/r4MAS",
-#                         ref = "719f99f0cd36784eb4709af80b1991e60acdd17f")
-# install.packages("PBSadmb")
+#remotes::install_github("Bai-Li-NOAA/Age_Structured_Stock_Assessment_Model_Comparison")
+#remotes::install_github("cmlegault/ASAPplots")
+#remotes::install_github("nmfs-fish-tools/r4MAS", ref="611e236d0147a231121c3e1f4429ca7b4d34d997")
+#install.packages("PBSadmb")
 
 library(ASSAMC)
 library(r4ss)
@@ -17,11 +15,14 @@ library(jsonlite)
 library(parallel)
 library(doParallel)
 
+project_dir <- "/Users/haleyoleynik/Documents/GitHub/r4MAS-model-comparison"
+
+source(file.path(project_dir, "ASSAMC_comparison", "R", "run_mas_misreported_catch.R"))
 
 # Set up OM ---------------------------------------------------------------
 
 # Need to have the em_input folder in the working directory run other estimation models
-maindir <- "#######"
+maindir <- file.path(project_dir, "ASSAMC_comparison/tuna")
 
 om_sim_num <- 160 # total number of iterations per case
 keep_sim_num <- 100 # number of kept iterations per case
