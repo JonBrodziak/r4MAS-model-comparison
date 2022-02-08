@@ -13,7 +13,7 @@ run_mas_misreported_catch <- function(maindir = maindir,
   unlink(list.files(file.path(casedir, "output", "MAS"), full.names = TRUE), recursive = TRUE)
   sapply(1:om_sim_num, function(x) dir.create(file.path(casedir, "output", subdir, paste("s", x, sep = ""))))
 
-  mismatch_ratio <<- matrix(NA, nrow = om_sim_num, ncol = om_input$nyr)
+  # mismatch_ratio <<- matrix(NA, nrow = om_sim_num, ncol = om_input$nyr) # 1 value per year per iteration
 
   for (om_sim in 1:om_sim_num) {
     load(file = file.path(casedir, "output", "OM", paste("OM", om_sim, ".RData", sep = "")))
@@ -91,12 +91,18 @@ run_mas_misreported_catch <- function(maindir = maindir,
     L.age.miscatch <- om_output$L.age
     L.mt.miscatch <- om_output$L.mt
     
-    mismatch_ratio[om_sim, ] <<- runif(n = om_input$nyr, min = misreported_catch_ratio, max = 1.0)
+    # misreporting follows a uniform random distribution across ages and years
+    mismatch_ratio <<- matrix(NA, nrow = om_input$nyr, ncol =nages) # 12 values per year per iteration
+    for (yr_id in 1:om_input$nyr) {
+      mismatch_ratio[yr_id, ] <<- runif(n = nages, min = misreported_catch_ratio, max = 1.0)
+    }
+    
+    # mismatch_ratio[om_sim, ] <<- runif(n = om_input$nyr, min = misreported_catch_ratio, max = 1.0) # 1 values per year per iteration
 
     for (i in 1:fleet_num) {
       for (j in 1:om_input$nyr) {
-        # L.age.miscatch[[i]][j, ] <- om_output$L.age[[i]][j, ] * rnorm(om_input$nages, mean = 50, sd = 10)
-        L.age.miscatch[[i]][j, ] <- om_output$L.age[[i]][j, ] * mismatch_ratio[om_sim, j]
+        # L.age.miscatch[[i]][j, ] <- om_output$L.age[[i]][j, ] * mismatch_ratio[om_sim, j] # 1 values per year per iteration
+        L.age.miscatch[[i]][j, ] <- om_output$L.age[[i]][j, ] * mismatch_ratio[j, ]
         L.mt.miscatch[[i]][j] <- sum(L.age.miscatch[[i]][j, ] * om_input$W.mt)
       }
     }
