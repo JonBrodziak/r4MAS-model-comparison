@@ -2,7 +2,7 @@
 
 # remotes::install_github("Bai-Li-NOAA/Age_Structured_Stock_Assessment_Model_Comparison")
 # remotes::install_github("cmlegault/ASAPplots")
-# remotes::install_github("nmfs-fish-tools/r4MAS", ref="611e236d0147a231121c3e1f4429ca7b4d34d997")
+# remotes::install_github("nmfs-fish-tools/r4MAS", ref="a3fdf46f441d1058c776e20dba69936867d5b51f")
 # install.packages("PBSadmb")
 
 library(ASSAMC)
@@ -144,25 +144,6 @@ generate_plot(
 #   plot_color = c("deepskyblue3", "coral3"),
 #   input_list = null_case_input
 # )
-
-# Case 1_bc ------------------------------------------------------------------
-
-updated_input <- save_initial_input(
-  base_case = FALSE,
-  input_list = null_case_input,
-  case_name = "C1_bc",
-  om_bias_cor = TRUE,
-  bias_cor_method = "median_unbiased", 
-  em_bias_cor = TRUE
-)
-run_om(input_list = updated_input, show_iter_num = F)
-run_em(em_names = c("MAS"), input_list = updated_input)
-generate_plot(
-  em_names = c("MAS"),
-  plot_ncol = 1, plot_nrow = 1,
-  plot_color = c("deepskyblue3"),
-  input_list = updated_input
-)
 
 # Case 2 ------------------------------------------------------------------
 
@@ -407,7 +388,7 @@ generate_plot(
 )
 
 
-# Case 12 (Misreported catch: ratio=0.8) ---------------------------------------------
+# Case 12 (Misreported catch: ratio=0.5; misreporting varies by age and year) ---------------------------------------------
 
 updated_input <- save_initial_input(base_case=FALSE,
                                     input_list=null_case_input,
@@ -422,31 +403,6 @@ run_mas_misreported_catch(maindir = updated_input$maindir,
                           casedir = updated_input$case_name,
                           em_bias_cor = updated_input$em_bias_cor,
                           input_list = updated_input,
-                          misreported_catch_ratio = 0.8)
-
-generate_plot(
-  em_names = c("MAS"),
-  plot_ncol = 1, plot_nrow = 1,
-  plot_color = c("deepskyblue3"),
-  input_list = updated_input
-)
-
-
-# Case 13 (Misreported catch: ratio=0.5) ---------------------------------------------
-
-updated_input <- save_initial_input(base_case=FALSE,
-                                    input_list=null_case_input,
-                                    case_name="C13")
-## Run OM
-run_om(input_list = updated_input, show_iter_num = F)
-
-## Run MAS
-run_mas_misreported_catch(maindir = updated_input$maindir,
-                          subdir = "MAS",
-                          om_sim_num = updated_input$om_sim_num,
-                          casedir = updated_input$case_name,
-                          em_bias_cor = updated_input$em_bias_cor,
-                          input_list = updated_input,
                           misreported_catch_ratio = 0.5)
 
 generate_plot(
@@ -456,52 +412,3 @@ generate_plot(
   input_list = updated_input
 )
 
-
-# Case 14 (Misreported catch: ratio=0.5; misreporting varies by age and year) ---------------------------------------------
-
-updated_input <- save_initial_input(base_case=FALSE,
-                                    input_list=null_case_input,
-                                    case_name="C14")
-## Run OM
-run_om(input_list = updated_input, show_iter_num = F)
-
-## Run MAS
-run_mas_misreported_catch(maindir = updated_input$maindir,
-                          subdir = "MAS",
-                          om_sim_num = updated_input$om_sim_num,
-                          casedir = updated_input$case_name,
-                          em_bias_cor = updated_input$em_bias_cor,
-                          input_list = updated_input,
-                          misreported_catch_ratio = 0.5)
-
-generate_plot(
-  em_names = c("MAS"),
-  plot_ncol = 1, plot_nrow = 1,
-  plot_color = c("deepskyblue3"),
-  input_list = updated_input
-)
-
-
-# Case 15 (Misreported catch: ratio=0.8; misreporting varies by age and year) ---------------------------------------------
-
-updated_input <- save_initial_input(base_case=FALSE,
-                                    input_list=null_case_input,
-                                    case_name="C15")
-## Run OM
-run_om(input_list = updated_input, show_iter_num = F)
-
-## Run MAS
-run_mas_misreported_catch(maindir = updated_input$maindir,
-                          subdir = "MAS",
-                          om_sim_num = updated_input$om_sim_num,
-                          casedir = updated_input$case_name,
-                          em_bias_cor = updated_input$em_bias_cor,
-                          input_list = updated_input,
-                          misreported_catch_ratio = 0.8)
-
-generate_plot(
-  em_names = c("MAS"),
-  plot_ncol = 1, plot_nrow = 1,
-  plot_color = c("deepskyblue3"),
-  input_list = updated_input
-)

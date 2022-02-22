@@ -78,16 +78,8 @@ library(scales)
   - $CV_{I} = 0.5$
   
 - Case 12: Misreported catch
-  - Multiply "true" age composition with randomly generated values that follow an uniform distribution with min of 0.8 and max of 1. Misreporting follows a uniform random distribution across years.
-  
-- Case 13: Misreported catch
-  - Multiply "true" age composition with randomly generated values that follow an uniform distribution with min of 0.5 and max of 1. Misreporting follows a uniform random distribution across years.
-  
-- Case 14: Misreported catch
   - Multiply "true" age composition with randomly generated values that follow an uniform distribution with min of 0.5 and max of 1. Misreporting follows a uniform random distribution across ages and years.
-  
-- Case 15: Misreported catch
-  - Multiply "true" age composition with randomly generated values that follow an uniform distribution with min of 0.8 and max of 1. Misreporting follows a uniform random distribution across ages and years.
+
 
 Table 1. Settings of recruitment variability, fishing mortality deviations, fishing mortality patterns, selectivity patterns, and initial condition.
 
@@ -284,7 +276,7 @@ Figure 2. Violin plot of relative error (RE) across years and iterations for spa
 # Plot SSB, R, F, SSB/SSBMSY and F/FMSY over time ------------------
 
 ## Aggregate output data
-case_id <- paste("C", 1:15, sep="")
+case_id <- paste("C", 1:12, sep="")
 maindir_list <- paste(project_dir, case_id, sep="")
 
 em_num <- 1
