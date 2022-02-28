@@ -1,9 +1,9 @@
 # Install and library packages --------------------------------------------
 
-#remotes::install_github("Bai-Li-NOAA/Age_Structured_Stock_Assessment_Model_Comparison")
-#remotes::install_github("cmlegault/ASAPplots")
-#remotes::install_github("nmfs-fish-tools/r4MAS", ref="611e236d0147a231121c3e1f4429ca7b4d34d997")
-#install.packages("PBSadmb")
+# remotes::install_github("Bai-Li-NOAA/Age_Structured_Stock_Assessment_Model_Comparison")
+# remotes::install_github("cmlegault/ASAPplots")
+remotes::install_github("nmfs-fish-tools/r4MAS", ref="a3fdf46f441d1058c776e20dba69936867d5b51f", force = TRUE)
+# install.packages("PBSadmb")
 
 library(ASSAMC)
 library(r4ss)
@@ -24,7 +24,7 @@ source(file.path(project_dir, "ASSAMC_comparison", "R", "run_mas_misreported_cat
 # Need to have the em_input folder in the working directory run other estimation models
 maindir <- file.path(project_dir, "ASSAMC_comparison/tuna")
 
-om_sim_num <- 160 # total number of iterations per case
+om_sim_num <- 120 # total number of iterations per case
 keep_sim_num <- 100 # number of kept iterations per case
 figure_number <- 10 # number of individual iteration to plot
 
@@ -118,11 +118,11 @@ om_bias_cor <- FALSE
 bias_cor_method <- "none" # Options: "none", "median_unbiased", and "mean_unbiased"
 em_bias_cor <- FALSE
 
-
-
 # Case 1 ------------------------------------------------------------------
 
 null_case_input <- save_initial_input(base_case = TRUE, case_name = "C1")
+
+# run up to here if running one case at a time 
 
 ## Run OM
 run_om(input_list = null_case_input, show_iter_num = T)
@@ -296,13 +296,13 @@ updated_input <- save_initial_input(base_case=FALSE,
                                     sel_survey=sel_survey)
 
 run_om(input_list = updated_input, show_iter_num = F)
-# run_em(em_names = c("MAS"), input_list = updated_input)
-# generate_plot(
-#   em_names = c("MAS"),
-#   plot_ncol = 1, plot_nrow = 1,
-#   plot_color = c("deepskyblue3"),
-#   input_list = updated_input
-# )
+run_em(em_names = c("MAS"), input_list = updated_input)
+generate_plot(
+   em_names = c("MAS"),
+   plot_ncol = 1, plot_nrow = 1,
+   plot_color = c("deepskyblue3"),
+   input_list = updated_input
+ )
 
 
 # Case 9 ------------------------------------------------------------------
@@ -339,13 +339,13 @@ updated_input <- save_initial_input(base_case=FALSE,
                                     n.survey=n.survey,
                                     sel_survey=sel_survey)
 run_om(input_list = updated_input, show_iter_num = F)
-# run_em(em_names = c("MAS"), input_list = updated_input)
-# generate_plot(
-#   em_names = c("MAS"),
-#   plot_ncol = 1, plot_nrow = 1,
-#   plot_color = c("deepskyblue3"),
-#   input_list = updated_input
-# )
+run_em(em_names = c("MAS"), input_list = updated_input)
+generate_plot(
+  em_names = c("MAS"),
+  plot_ncol = 1, plot_nrow = 1,
+  plot_color = c("deepskyblue3"),
+  input_list = updated_input
+)
 
 
 # Case 10 -----------------------------------------------------------------
@@ -356,6 +356,57 @@ updated_input <- save_initial_input(base_case=FALSE,
                                     initial_equilibrium_F=FALSE)
 run_om(input_list = updated_input, show_iter_num = F)
 run_em(em_names = c("MAS"), input_list = updated_input)
+generate_plot(
+  em_names = c("MAS"),
+  plot_ncol = 1, plot_nrow = 1,
+  plot_color = c("deepskyblue3"),
+  input_list = updated_input
+)
+
+
+# Case 11 (Increase survey observation error) -----------------------------------------------------------------
+
+cv.survey <- list()
+cv.survey$survey1 <- 0.5
+
+# Input CV of surveys for EMs
+input.cv.survey <- list()
+input.cv.survey$survey1 <- 0.5
+
+updated_input <- save_initial_input(
+  base_case = FALSE,
+  input_list = null_case_input,
+  case_name = "C11",
+  cv.survey = cv.survey,
+  input.cv.survey = input.cv.survey
+)
+run_om(input_list = updated_input, show_iter_num = F)
+run_em(em_names = c("MAS"), input_list = updated_input)
+generate_plot(
+  em_names = c("MAS"),
+  plot_ncol = 1, plot_nrow = 1,
+  plot_color = c("deepskyblue3"),
+  input_list = updated_input
+)
+
+
+# Case 12 (Misreported catch: ratio=0.5; misreporting varies by age and year) ---------------------------------------------
+
+updated_input <- save_initial_input(base_case=FALSE,
+                                    input_list=null_case_input,
+                                    case_name="C12")
+## Run OM
+run_om(input_list = updated_input, show_iter_num = F)
+
+## Run MAS
+run_mas_misreported_catch(maindir = updated_input$maindir,
+                          subdir = "MAS",
+                          om_sim_num = updated_input$om_sim_num,
+                          casedir = updated_input$case_name,
+                          em_bias_cor = updated_input$em_bias_cor,
+                          input_list = updated_input,
+                          misreported_catch_ratio = 0.5)
+
 generate_plot(
   em_names = c("MAS"),
   plot_ncol = 1, plot_nrow = 1,
