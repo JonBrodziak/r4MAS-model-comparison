@@ -2,7 +2,7 @@
 
 # remotes::install_github("Bai-Li-NOAA/Age_Structured_Stock_Assessment_Model_Comparison")
 # remotes::install_github("cmlegault/ASAPplots")
-remotes::install_github("nmfs-fish-tools/r4MAS", ref="a3fdf46f441d1058c776e20dba69936867d5b51f", force = TRUE)
+remotes::install_github("nmfs-fish-tools/r4MAS", force = TRUE)
 # install.packages("PBSadmb")
 
 library(ASSAMC)
