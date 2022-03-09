@@ -45,7 +45,7 @@ SRmodel <- 1 # 1=Beverton-Holt; 2=Ricker
 
 M <- 0.7988979/4 # Tuna specific mortality estimated from the scombrid database using Tmax method 
 
-Linf <- 856         # Asymptotic average length
+Linf <- 1920.5         # Asymptotic average length
 K <- 0.29/4         # Growth coefficient                                      
 a0 <- -0.268*4      # Theoretical age at size 0                         
 a.lw <- 0.02958656  # Length-weight coefficient
