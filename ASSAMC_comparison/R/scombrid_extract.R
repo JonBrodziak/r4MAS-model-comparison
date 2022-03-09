@@ -46,10 +46,10 @@ scombrid.extract <- function(data,type) {
 scombrid.extract(data = scombrid, type = 'mean')
 scombrid.extract(data = scombrid, type = 'median')
 
-# Filter for skipjack, yellowfin and bigeye tuna ----------------------------------------------------
+# Filter for yellowfin and bigeye tuna ----------------------------------------------------
 
 tropical.scombrid <- scombrid %>%
-  filter(C_name %in% c("Skipjack tuna", "Yellowfin tuna", "Bigeye tuna"))
+  filter(C_name %in% c("Yellowfin tuna", "Bigeye tuna"))
 
 # Calculate mean and median life history parameters 
 scombrid.extract(data = tropical.scombrid, type = 'mean')
