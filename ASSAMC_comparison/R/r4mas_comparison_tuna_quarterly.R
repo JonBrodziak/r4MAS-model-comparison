@@ -31,7 +31,7 @@ figure_number <- 10 # number of individual iteration to plot
 seed_num <- 9924
 
 ## Life-history parameters 
-year <- 1:30  
+year <- 1:120  
 ages <- 1:60 # Changed for quarterly time step 
 
 initial_equilibrium_F <- TRUE
