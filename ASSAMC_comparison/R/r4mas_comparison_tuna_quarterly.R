@@ -24,36 +24,36 @@ source(file.path(project_dir, "ASSAMC_comparison", "R", "run_mas_misreported_cat
 # Need to have the em_input folder in the working directory run other estimation models
 maindir <- file.path(project_dir, "ASSAMC_comparison/tuna")
 
-om_sim_num <- 10 #120 # total number of iterations per case
-keep_sim_num <- 100 # number of kept iterations per case
-figure_number <- 10 # number of individual iteration to plot
+om_sim_num <- 120    # total number of iterations per case
+keep_sim_num <- 100  # number of kept iterations per case
+figure_number <- 10  # number of individual iteration to plot
 
 seed_num <- 9924
 
 ## Life-history parameters 
-year <- 1:120  
-ages <- 1:60 # Changed for quarterly time step 
+year <- 1:120  # Changed for quarterly time step
+ages <- 1:60   # Changed for quarterly time step 
 
 initial_equilibrium_F <- TRUE
-median_R0 <- 1000000/4 # Average annual unfished recruitment (scales the popn) - changed for quarterly 
-median_h <- 0.69 #Steepness of the Beverton-Holt spawner-recruit relationship
+median_R0 <- 1000000/4   # Average annual unfished recruitment - /4 for quarterly 
+median_h <- 0.69         #Steepness of the Beverton-Holt spawner-recruit relationship
 mean_R0 <- NULL
 mean_h <- NULL
-SRmodel <- 1 # 1=Beverton-Holt; 2=Ricker
+SRmodel <- 1             # 1=Beverton-Holt; 2=Ricker
 
-# Median life history parameters for Yellowfin and Bigeye tunas  
+# Median life history parameters for Yellowfin and Bigeye tunas (tropical)
 
-M <- 0.7988979/4 # Tuna specific mortality estimated from the scombrid database using Tmax method 
+M <- 0.7988979/4         # Mortality estimated from the scombrid database using Tmax method 
 
-Linf <- 1920.5         # Asymptotic average length
-K <- 0.29/4         # Growth coefficient                                      
-a0 <- -0.268*4      # Theoretical age at size 0                         
-a.lw <- 0.02958656  # Length-weight coefficient
-b.lw <- 2.90182     # Length-weight exponent
-A50.mat <- 1.97*4   # Age at 50% maturity                                  
-slope.mat <- 4.08/4 # Slope of maturity 
+Linf <- 1920.5           # Asymptotic average length
+K <- 0.29/4              # Growth coefficient                                      
+a0 <- -0.268*4           # Theoretical age at size 0                         
+a.lw <- 0.02958656       # Length-weight coefficient
+b.lw <- 2.90182          # Length-weight exponent
+A50.mat <- 1.97*4        # Age at 50% maturity                                  
+slope.mat <- 4.08/4      # Slope of maturity 
 
-pattern.mat <- 1    # Simple logistic maturity
+pattern.mat <- 1         # Simple logistic maturity
 female.proportion <- 0.5 # Sex ratio
 
 ## Fleet settings
@@ -276,19 +276,19 @@ generate_plot(
 sel_fleet <- list()
 
 sel_fleet$fleet1$pattern <- 2
-sel_fleet$fleet1$A50.sel1 <- 4
-sel_fleet$fleet1$slope.sel1 <- 1
-sel_fleet$fleet1$slope.sel2 <- 0.7
-sel_fleet$fleet1$A50.sel2 <- 11
+sel_fleet$fleet1$A50.sel1 <- 4*4       # Change for quarterly time step
+sel_fleet$fleet1$slope.sel1 <- 1/4     # Change for quarterly time step
+sel_fleet$fleet1$slope.sel2 <- 0.7/4   # Change for quarterly time step
+sel_fleet$fleet1$A50.sel2 <- 11*4      # Change for quarterly time step
 
 #Define survey selectivity
 sel_survey <- list()
 
 sel_survey$survey1$pattern <- 2
-sel_survey$survey1$A50.sel1 <- 2*4       # Change for quarterly time step
-sel_survey$survey1$slope.sel1 <- 1.5/4   # Change for quarterly time step
-sel_survey$survey1$A50.sel2 <- 12*4      # Change for quarterly time step
-sel_survey$survey1$slope.sel2 <- 0.37/4  # Change for quarterly time step
+sel_survey$survey1$A50.sel1 <- 2*4      # Change for quarterly time step
+sel_survey$survey1$slope.sel1 <- 1.5/4  # Change for quarterly time step
+sel_survey$survey1$A50.sel2 <- 12*4     # Change for quarterly time step
+sel_survey$survey1$slope.sel2 <- 0.37/4 # Change for quarterly time step
 updated_input <- save_initial_input(base_case=FALSE,
                                     input_list=null_case_input,
                                     case_name="C8",
@@ -327,8 +327,8 @@ sel_survey$survey1$A50.sel1 <- 1.5*4  # Change for quarterly time step
 sel_survey$survey1$slope.sel1 <- 2/4  # Change for quarterly time step
 
 sel_survey$survey2$pattern <- 1
-sel_survey$survey2$A50.sel1 <- 1.5
-sel_survey$survey2$slope.sel1 <- 2
+sel_survey$survey2$A50.sel1 <- 1.5*4  # Change for quarterly time step
+sel_survey$survey2$slope.sel1 <- 2/4  # Change for quarterly time step
 
 updated_input <- save_initial_input(base_case=FALSE,
                                     input_list=null_case_input,
