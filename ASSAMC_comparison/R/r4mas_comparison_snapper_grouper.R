@@ -24,13 +24,13 @@ source(file.path(project_dir, "ASSAMC_comparison", "R", "run_mas_misreported_cat
 maindir <- file.path(project_dir, "ASSAMC_comparison/snapper_grouper")
 
 
+# om_sim_num <- 120 # total number of iterations per case
+# keep_sim_num <- 100 # number of kept iterations per case
+# figure_number <- 10 # number of individual iteration to plot
+
 om_sim_num <- 120 # total number of iterations per case
 keep_sim_num <- 100 # number of kept iterations per case
 figure_number <- 10 # number of individual iteration to plot
-
-# om_sim_num <- 30 # total number of iterations per case
-# keep_sim_num <- 30 # number of kept iterations per case
-# figure_number <- 1 # number of individual iteration to plot
 
 seed_num <- 9924
 
@@ -412,3 +412,31 @@ generate_plot(
   input_list = updated_input
 )
 
+# Create summary table
+project_dir <- "C:/Users/bai.li/Documents/Github/r4MAS-model-comparison/ASSAMC_comparison/snapper_grouper/"
+case_id <- paste("C", 1:12, sep="")
+maindir_list <- paste(project_dir, case_id, sep="")
+
+em_num <- 1
+
+var <- c("ssb", "recruit", "Ftot", "ssbratio", "fratio")
+mare <- matrix(NA, nrow = length(maindir_list), ncol=length(var))
+row.names(mare) <- paste("Case", 1:12)
+colnames(mare) <- c("SSB", "R", "F", "Relative SSB", "Relative F")
+
+nyear <- 30
+
+for (var_id in 1:length(var)){
+  temp_matrix <- matrix(NA, nrow = nyear, ncol = length(maindir_list))
+  for (j in 1:length(maindir_list)) {
+    load(file.path(maindir_list[j], "output", "performance_measure.RData"))
+    temp <- sapply(are_list, `[[`, x = var[var_id]) # ARE over years for a specific iteration
+    for (i in 1:nyear){
+      temp_matrix[i, j] <- median(sapply(temp, `[[`, i))
+    }
+  }
+  mare[, var_id] <- round(apply(temp_matrix, 2, mean)*100, digits = 2)
+  
+}
+
+write.csv(mare, file=file.path(project_dir, "mare.csv"))
