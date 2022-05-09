@@ -36,7 +36,7 @@ ages <- 1:60   # Changed for quarterly time step
 
 initial_equilibrium_F <- TRUE
 median_R0 <- 1000000/4   # Average annual unfished recruitment - /4 for quarterly 
-median_h <- 0.69         #Steepness of the Beverton-Holt spawner-recruit relationship
+median_h <- 0.69         # Steepness of the Beverton-Holt spawner-recruit relationship
 mean_R0 <- NULL
 mean_h <- NULL
 SRmodel <- 1             # 1=Beverton-Holt; 2=Ricker
@@ -413,3 +413,32 @@ generate_plot(
   plot_color = c("deepskyblue3"),
   input_list = updated_input
 )
+
+# Create summary table -------------------------------------------------------------------------------
+project_dir <- "/Users/haleyoleynik/Documents/GitHub/r4MAS-model-comparison/ASSAMC_comparison/tuna/"
+case_id <- paste("C", 1:12, sep="")
+maindir_list <- paste(project_dir, case_id, sep="")
+
+em_num <- 1
+
+var <- c("ssb", "recruit", "Ftot", "ssbratio", "fratio")
+mare <- matrix(NA, nrow = length(maindir_list), ncol=length(var))
+row.names(mare) <- paste("Case", 1:12)
+colnames(mare) <- c("SSB", "R", "F", "Relative SSB", "Relative F")
+
+nyear <- 30
+
+for (var_id in 1:length(var)){
+  temp_matrix <- matrix(NA, nrow = nyear, ncol = length(maindir_list))
+  for (j in 1:length(maindir_list)) {
+    load(file.path(maindir_list[j], "output", "performance_measure.RData"))
+    temp <- sapply(are_list, `[[`, x = var[var_id]) # ARE over years for a specific iteration
+    for (i in 1:nyear){
+      temp_matrix[i, j] <- median(sapply(temp, `[[`, i))
+    }
+  }
+  mare[, var_id] <- round(apply(temp_matrix, 2, mean)*100, digits = 2)
+  
+}
+
+write.csv(mare, file=file.path(project_dir, "mare.csv"))
