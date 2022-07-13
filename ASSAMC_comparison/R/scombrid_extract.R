@@ -6,7 +6,7 @@ require(tidyverse)
 setwd("~/Documents/GitHub/r4MAS-model-comparison/ASSAMC_comparison/data")
 
 # read data 
-scombrid <- read_csv("Global_scombrid_life_history_data_set.csv")
+scombrid <- read.csv("Global_scombrid_life_history_data_set.csv")
 
 # function to extract life history parameters and compute mean or median 
 scombrid.extract <- function(data,type) {
