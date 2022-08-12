@@ -24,8 +24,8 @@ source(file.path(project_dir, "ASSAMC_comparison", "R", "run_mas_misreported_cat
 # Need to have the em_input folder in the working directory run other estimation models
 maindir <- file.path(project_dir, "ASSAMC_comparison/tuna")
 
-om_sim_num <- 2 #120    # total number of iterations per case
-keep_sim_num <- 2 #100  # number of kept iterations per case
+om_sim_num <- 120    # total number of iterations per case
+keep_sim_num <- 100  # number of kept iterations per case
 figure_number <- 10  # number of individual iteration to plot
 
 seed_num <- 9924
@@ -48,7 +48,7 @@ M <- 0.7988979/4         # Mortality estimated from the scombrid database using 
 Linf <- 1920.5           # Asymptotic average length
 K <- 0.29/4              # Growth coefficient                                      
 a0 <- -0.268*4           # Theoretical age at size 0                         
-a.lw <- 0.02958656       # Length-weight coefficient
+a.lw <- 4.05e-08         # Length-weight coefficient
 b.lw <- 2.90182          # Length-weight exponent
 A50.mat <- 1.97*4        # Age at 50% maturity                                  
 slope.mat <- 4.08/4      # Slope of maturity 
@@ -271,24 +271,26 @@ generate_plot(
 )
 
 
-# Case 8 ------------------------------------------------------------------
+# Case 8 - updated parameters ------------------------------------------------------------------
 
+#Define fishery selectivity
 sel_fleet <- list()
 
 sel_fleet$fleet1$pattern <- 2
-sel_fleet$fleet1$A50.sel1 <- 4*4 #tried - 2*4  # Change for quarterly time step
-sel_fleet$fleet1$slope.sel1 <- 1 #/4     # Change for quarterly time step
-sel_fleet$fleet1$slope.sel2 <- 0.7 #/4   # Change for quarterly time step
-sel_fleet$fleet1$A50.sel2 <- 11*4      # Change for quarterly time step
+sel_fleet$fleet1$A50.sel1 <- 8       # Change for C8 quarterly time step
+sel_fleet$fleet1$slope.sel1 <- 1.0   # Change for C8 quarterly time step
+sel_fleet$fleet1$A50.sel2 <- 45      # Change for C8 quarterly time step
+sel_fleet$fleet1$slope.sel2 <- 1.0   # Change for C8 quarterly time step
 
 #Define survey selectivity
 sel_survey <- list()
 
 sel_survey$survey1$pattern <- 2
-sel_survey$survey1$A50.sel1 <- 2*4      # Change for quarterly time step
-sel_survey$survey1$slope.sel1 <- 1.5/4  # Change for quarterly time step
-sel_survey$survey1$A50.sel2 <- 12*4     # Change for quarterly time step
-sel_survey$survey1$slope.sel2 <- 0.37/4 # Change for quarterly time step
+sel_survey$survey1$A50.sel1 <- 8      # Change for C8 quarterly time step
+sel_survey$survey1$A50.sel2 <- 45     # Change for C8 quarterly time step
+sel_survey$survey1$slope.sel1 <- 1.0  # Change for C8 quarterly time step
+sel_survey$survey1$slope.sel2 <- 1.0  # Change for C8 quarterly time step
+
 updated_input <- save_initial_input(base_case=FALSE,
                                     input_list=null_case_input,
                                     case_name="C8",
@@ -303,8 +305,6 @@ generate_plot(
   plot_color = c("deepskyblue3"),
   input_list = updated_input
 )
-
-
 # Case 9 ------------------------------------------------------------------
 
 survey_num <- 2
@@ -442,3 +442,11 @@ for (var_id in 1:length(var)){
 }
 
 write.csv(mare, file=file.path(project_dir, "mare.csv"))
+
+
+
+
+
+
+
+
