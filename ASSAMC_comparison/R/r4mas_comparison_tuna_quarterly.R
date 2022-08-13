@@ -2,7 +2,7 @@
 
 # remotes::install_github("Bai-Li-NOAA/Age_Structured_Stock_Assessment_Model_Comparison")
 # remotes::install_github("cmlegault/ASAPplots")
-remotes::install_github("nmfs-fish-tools/r4MAS", force = TRUE)
+# remotes::install_github("nmfs-fish-tools/r4MAS", force = TRUE)
 # install.packages("PBSadmb")
 
 library(ASSAMC)
@@ -24,36 +24,36 @@ source(file.path(project_dir, "ASSAMC_comparison", "R", "run_mas_misreported_cat
 # Need to have the em_input folder in the working directory run other estimation models
 maindir <- file.path(project_dir, "ASSAMC_comparison/tuna")
 
-om_sim_num <- 120 # total number of iterations per case
-keep_sim_num <- 100 # number of kept iterations per case
-figure_number <- 10 # number of individual iteration to plot
+om_sim_num <- 120    # total number of iterations per case
+keep_sim_num <- 100  # number of kept iterations per case
+figure_number <- 10  # number of individual iteration to plot
 
 seed_num <- 9924
 
-## Life-history parameters
-year <- 1:30
-ages <- 1:12 # Age structure of the popn
+## Life-history parameters 
+year <- 1:120  # Changed for quarterly time step
+ages <- 1:60   # Changed for quarterly time step 
 
 initial_equilibrium_F <- TRUE
-median_R0 <- 1000000 # Average annual unfished recruitment (scales the popn)
-median_h <- 0.75 # Steepness of the Beverton-Holt spawner-recruit relationship.
+median_R0 <- 1000000/4   # Average annual unfished recruitment - /4 for quarterly 
+median_h <- 0.69         # Steepness of the Beverton-Holt spawner-recruit relationship
 mean_R0 <- NULL
 mean_h <- NULL
-SRmodel <- 1 # 1=Beverton-Holt; 2=Ricker
+SRmodel <- 1             # 1=Beverton-Holt; 2=Ricker
 
-M <- 0.7507703 # Tuna specific mortality estimated from the scombrid database using Tmax method 
+# Median life history parameters for Yellowfin and Bigeye tunas (tropical)
 
-# TUNA life history parameters - medians from scombrid database 
+M <- 0.7988979/4         # Mortality estimated from the scombrid database using Tmax method 
 
-Linf <- 856 # Asymptotic average length
-K <- 0.31 # Growth coefficient
-a0 <- -0.86 # Theoretical age at size 0
-a.lw <- 0.0269 # Length-weight coefficient
-b.lw <- 3.02 # Length-weight exponent
-A50.mat <- 2 # Age at 50% maturity
-slope.mat <- 4.08 # Slope of maturity 
+Linf <- 1920.5           # Asymptotic average length
+K <- 0.29/4              # Growth coefficient                                      
+a0 <- -0.268*4           # Theoretical age at size 0                         
+a.lw <- 4.05e-08         # Length-weight coefficient
+b.lw <- 2.90182          # Length-weight exponent
+A50.mat <- 1.97*4        # Age at 50% maturity                                  
+slope.mat <- 4.08/4      # Slope of maturity 
 
-pattern.mat <- 1 # Simple logistic maturity
+pattern.mat <- 1         # Simple logistic maturity
 female.proportion <- 0.5 # Sex ratio
 
 ## Fleet settings
@@ -75,8 +75,8 @@ n.L$fleet1 <- 200
 sel_fleet <- list()
 
 sel_fleet$fleet1$pattern <- 1
-sel_fleet$fleet1$A50.sel1 <- 2
-sel_fleet$fleet1$slope.sel1 <- 1
+sel_fleet$fleet1$A50.sel1 <- 2*4    # Change for quarterly time step
+sel_fleet$fleet1$slope.sel1 <- 1/4  # Change for quarterly time step
 
 ## Survey settings
 survey_num <- 1
@@ -97,8 +97,8 @@ n.survey$survey1 <- 200
 sel_survey <- list()
 
 sel_survey$survey1$pattern <- 1
-sel_survey$survey1$A50.sel1 <- 1.5
-sel_survey$survey1$slope.sel1 <- 2
+sel_survey$survey1$A50.sel1 <- 1.5*4   # Changed for quarterly time step
+sel_survey$survey1$slope.sel1 <- 2/4   # Changed for quarterly time step 
 
 ## Other settings
 logf_sd <- 0.2
@@ -271,24 +271,26 @@ generate_plot(
 )
 
 
-# Case 8 ------------------------------------------------------------------
+# Case 8 - updated parameters ------------------------------------------------------------------
 
+#Define fishery selectivity
 sel_fleet <- list()
 
 sel_fleet$fleet1$pattern <- 2
-sel_fleet$fleet1$A50.sel1 <- 4
-sel_fleet$fleet1$slope.sel1 <- 1
-sel_fleet$fleet1$slope.sel2 <- 0.7
-sel_fleet$fleet1$A50.sel2 <- 11
+sel_fleet$fleet1$A50.sel1 <- 8       # Change for C8 quarterly time step
+sel_fleet$fleet1$slope.sel1 <- 1.0   # Change for C8 quarterly time step
+sel_fleet$fleet1$A50.sel2 <- 45      # Change for C8 quarterly time step
+sel_fleet$fleet1$slope.sel2 <- 1.0   # Change for C8 quarterly time step
 
 #Define survey selectivity
 sel_survey <- list()
 
 sel_survey$survey1$pattern <- 2
-sel_survey$survey1$A50.sel1 <- 2
-sel_survey$survey1$slope.sel1 <- 1.5
-sel_survey$survey1$A50.sel2 <- 12
-sel_survey$survey1$slope.sel2 <- 0.37
+sel_survey$survey1$A50.sel1 <- 8      # Change for C8 quarterly time step
+sel_survey$survey1$A50.sel2 <- 45     # Change for C8 quarterly time step
+sel_survey$survey1$slope.sel1 <- 1.0  # Change for C8 quarterly time step
+sel_survey$survey1$slope.sel2 <- 1.0  # Change for C8 quarterly time step
+
 updated_input <- save_initial_input(base_case=FALSE,
                                     input_list=null_case_input,
                                     case_name="C8",
@@ -298,13 +300,11 @@ updated_input <- save_initial_input(base_case=FALSE,
 run_om(input_list = updated_input, show_iter_num = F)
 run_em(em_names = c("MAS"), input_list = updated_input)
 generate_plot(
-   em_names = c("MAS"),
-   plot_ncol = 1, plot_nrow = 1,
-   plot_color = c("deepskyblue3"),
-   input_list = updated_input
- )
-
-
+  em_names = c("MAS"),
+  plot_ncol = 1, plot_nrow = 1,
+  plot_color = c("deepskyblue3"),
+  input_list = updated_input
+)
 # Case 9 ------------------------------------------------------------------
 
 survey_num <- 2
@@ -323,12 +323,12 @@ n.survey$survey2 <- 200
 #define survey selectivity
 sel_survey <- list()
 sel_survey$survey1$pattern <- 1
-sel_survey$survey1$A50.sel1 <- 1.5
-sel_survey$survey1$slope.sel1 <- 2
+sel_survey$survey1$A50.sel1 <- 1.5*4  # Change for quarterly time step
+sel_survey$survey1$slope.sel1 <- 2/4  # Change for quarterly time step
 
 sel_survey$survey2$pattern <- 1
-sel_survey$survey2$A50.sel1 <- 1.5
-sel_survey$survey2$slope.sel1 <- 2
+sel_survey$survey2$A50.sel1 <- 1.5*4  # Change for quarterly time step
+sel_survey$survey2$slope.sel1 <- 2/4  # Change for quarterly time step
 
 updated_input <- save_initial_input(base_case=FALSE,
                                     input_list=null_case_input,
@@ -413,3 +413,40 @@ generate_plot(
   plot_color = c("deepskyblue3"),
   input_list = updated_input
 )
+
+# Create summary table -------------------------------------------------------------------------------
+project_dir <- "/Users/haleyoleynik/Documents/GitHub/r4MAS-model-comparison/ASSAMC_comparison/tuna/"
+case_id <- paste("C", 1:12, sep="")
+maindir_list <- paste(project_dir, case_id, sep="")
+
+em_num <- 1
+
+var <- c("ssb", "recruit", "Ftot", "ssbratio", "fratio")
+mare <- matrix(NA, nrow = length(maindir_list), ncol=length(var))
+row.names(mare) <- paste("Case", 1:12)
+colnames(mare) <- c("SSB", "R", "F", "Relative SSB", "Relative F")
+
+nyear <- 30
+
+for (var_id in 1:length(var)){
+  temp_matrix <- matrix(NA, nrow = nyear, ncol = length(maindir_list))
+  for (j in 1:length(maindir_list)) {
+    load(file.path(maindir_list[j], "output", "performance_measure.RData"))
+    temp <- sapply(are_list, `[[`, x = var[var_id]) # ARE over years for a specific iteration
+    for (i in 1:nyear){
+      temp_matrix[i, j] <- median(sapply(temp, `[[`, i))
+    }
+  }
+  mare[, var_id] <- round(apply(temp_matrix, 2, mean)*100, digits = 2)
+  
+}
+
+write.csv(mare, file=file.path(project_dir, "mare.csv"))
+
+
+
+
+
+
+
+
