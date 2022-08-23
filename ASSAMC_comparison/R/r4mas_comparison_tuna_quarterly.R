@@ -48,7 +48,7 @@ M <- 0.7988979/4         # Mortality estimated from the scombrid database using 
 Linf <- 1920.5           # Asymptotic average length
 K <- 0.29/4              # Growth coefficient                                      
 a0 <- -0.268*4           # Theoretical age at size 0                         
-a.lw <- 4.05e-08         # Length-weight coefficient
+a.lw <- 4.356066e-08         # Length-weight coefficient
 b.lw <- 2.90182          # Length-weight exponent
 A50.mat <- 1.97*4        # Age at 50% maturity                                  
 slope.mat <- 4.08/4      # Slope of maturity 
