@@ -1,5 +1,6 @@
 ^data-raw$
 mas.log
-ASSAMC_Comparison/snapper_grouper/**/output
+ASSAMC_comparison/snapper_grouper_sigmar/C*
+ASSAMC_Comparison/snapper_grouper/C*
 ASSAMC_Comparison/snapper_grouper_sigmar/**/figure
 .Rhistory
