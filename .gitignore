@@ -1,0 +1,5 @@
+^data-raw$
+mas.log
+ASSAMC_Comparison/snapper_grouper/**/output
+ASSAMC_Comparison/snapper_grouper_sigmar/**/figure
+.Rhistory
